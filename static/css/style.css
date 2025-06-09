@@ -18,11 +18,11 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 220px;        /* Much taller to accommodate 200px logo */
+    height: 100px;        /* Much taller to accommodate 200px logo */
     background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
     display: flex;
     align-items: center;
-    padding: 10px 30px;   /* Reduced padding for better fit */
+    padding: 10px 20px;   /* Reduced padding for better fit */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 999;
 }
@@ -92,9 +92,9 @@ body {
 .sidebar {
     position: fixed;
     left: 0;
-    top: 220px;           /* Start below the taller header */
+    top: 100px;           /* Start below the taller header */
     width: 280px;
-    height: calc(100vh - 220px);  /* Adjust height for taller header */
+    height: calc(100vh - 100px);  /* Adjust height for taller header */
     background: linear-gradient(180deg, #1e40af 0%, #1d4ed8 50%, #2563eb 100%);
     padding-top: 30px;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
@@ -140,7 +140,7 @@ body {
 /* Main Content */
 .main-content {
     margin-left: 280px;
-    margin-top: 220px;
+    margin-top: 100px;
     padding: 40px;
     flex: 1;
     min-height: calc(100vh - 220px);
