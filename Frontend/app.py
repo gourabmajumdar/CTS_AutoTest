@@ -10,10 +10,10 @@ import time
 from datetime import datetime
 
 #RPI SSH Credentials
-#RPI_HOST = "71.185.253.158"
+RPI_HOST = "71.185.253.158"
 #RPI_HOST = "65.78.96.246"
-#RPI_USER = "root"
-#RPI_PASS = ""
+RPI_USER = "root"
+RPI_PASS = ""
 
 # Initialize Flask with explicit static folder configuration
 app = Flask(__name__,
@@ -29,10 +29,10 @@ else:
     app.config['DEBUG'] = True
     app.config['SECRET_KEY'] = 'dev-secret-key'
 
-app.config['UPLOAD_FOLDER'] = '/home/azureuser/Gourab/CTS_AutoTest/test_case'
+app.config['UPLOAD_FOLDER'] = '/home/azureuser/20251106/Gourab/CTS_AutoTest/test_case'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['GENERATED_SCRIPTS_FOLDER'] = '/home/azureuser/Gourab/CTS_AutoTest/generated-scripts'
-app.config['REPORT_FOLDER'] = '/home/azureuser/Gourab/CTS_AutoTest/reports'
+app.config['GENERATED_SCRIPTS_FOLDER'] = '/home/azureuser/20251106/Gourab/CTS_AutoTest/generated-scripts'
+app.config['REPORT_FOLDER'] = '/home/azureuser/20251106/Gourab/CTS_AutoTest/reports'
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -188,7 +188,7 @@ def generate_code():
            print(f"[INFO] Folder '{folder_path}' does not exist. Skipping cleanup.")
 
        print(f"Execute Auto-test-gen.py")
-       output = subprocess.run(["python3", "/home/azureuser/Gourab/CTS_AutoTest/Backend/Auto_test_gen.py"],capture_output=True,text=True)
+       output = subprocess.run(["python3", "/home/azureuser/20251106/Gourab/CTS_AutoTest/Backend/Auto_test_gen.py"],capture_output=True,text=True)
        print(f"RUN COMPLETED Auto-test-gen.py")
        print("STDOUT:", output.stdout)
 
@@ -219,79 +219,6 @@ def generate_code():
    except Exception as e:
        return jsonify({'success': False, 'message': f'Generation error: {str(e)}'})
 
-#@app.route('/generate', methods=['POST'])
-#def generate_code():
-#    """Generate Python test code from uploaded files"""
-#    global uploaded_files_global
-#
-#    try:
-#        data = request.get_json()
-#        print(f"data : {data}")
-#        input_text = data.get('input_text', '')
-#        print(f"input_text : {input_text}")
-#
-#        # Clear old scripts
-#        folder_path = app.config['GENERATED_SCRIPTS_FOLDER']
-#        if os.path.isdir(folder_path):  # Only proceed if the folder exists
-#            for filename in os.listdir(folder_path):
-#                file_path = os.path.join(folder_path, filename)
-#                try:
-#                    if os.path.isfile(file_path):
-#                        os.remove(file_path)
-#                        print(f"[INFO] Deleted old script: {file_path}")
-#                except Exception as e:
-#                    print(f"[ERROR] Failed to delete {file_path}: {e}")
-#            os.rmdir(folder_path)
-#            print(f"[INFO] Deleted : {folder_path}")
-#        else:
-#            print(f"[INFO] Folder '{folder_path}' does not exist. Skipping cleanup.")
-#
-#        print(f"Execute Auto-test-gen.py")
-#        output = subprocess.run(
-#            ["python3", "/home/azureuser/Gourab/CTS_AutoTest/Backend/Auto_test_gen.py"],
-#            capture_output=True,
-#            text=True
-#        )
-#        print(f"RUN COMPLETED Auto-test-gen.py")
-#        print("STDOUT:", output.stdout)
-#
-#        # Match multiple script generation lines
-#        matches = re.findall(r"Script generated\s*:\s*(\S+\.py)", output.stdout)
-#
-#        if not matches:
-#            return jsonify({'success': False, 'message': 'No scripts were generated.'})
-#
-#        all_generated_scripts = []
-#
-#        for script_name in matches:
-#            file_path = os.path.join(folder_path, script_name)
-#            if os.path.isfile(file_path):
-#                try:
-#                    with open(file_path, 'r', encoding='utf-8') as f:
-#                        generated_code = f'''# Generated Python Test Code - {script_name} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n''' + f.read()
-#                        all_generated_scripts.append({
-#                            'script_name': script_name,
-#                            'code': generated_code
-#                        })
-#                except Exception as e:
-#                    all_generated_scripts.append({
-#                        'script_name': script_name,
-#                        'code': f"Error reading file {script_name}: {str(e)}"
-#                    })
-#            else:
-#                all_generated_scripts.append({
-#                    'script_name': script_name,
-#                    'code': f"Script {script_name} was listed but not found on disk."
-#                })
-#
-#        return jsonify({
-#            'success': True,
-#            'generated_scripts': all_generated_scripts,
-#            'message': 'Python test scripts generated successfully'
-#        })
-#
-#    except Exception as e:
-#        return jsonify({'success': False, 'message': f'Generation error: {str(e)}'})
 @app.route('/save_code', methods=['POST'])
 def save_code():
     global generated_script_name
@@ -328,81 +255,35 @@ def remove_ansi_codes(text):
     return ansi_escape.sub('', text)
 
 
-#@app.route('/execute', methods=['POST'])
-#def execute_code():
-#    """Execute test code"""
-#    global generated_script_name
-#    print(f"[DEBUG] Script to execute: {generated_script_name}")
-
-    #local_folder = '/home/azureuser/Gourab/CTS_AutoTest/generated-scripts'
-#    local_script_path = os.path.join(app.config['GENERATED_SCRIPTS_FOLDER'], generated_script_name)
-#    print(f"DEBUG {local_script_path}")
-
-#    if not os.path.isfile(local_script_path):
-#        return jsonify({'success': False, 'message': 'Generated script file does not exist.'})
-
-#    try:
-#        data = request.get_json()
-#        code = data.get('code', '')
-
-#        print("[INFO] Connecting to Raspberry Pi...")
-#        ssh = paramiko.SSHClient()
-#        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-#        ssh.connect(RPI_HOST, username=RPI_USER, password=RPI_PASS)
-#        print("[INFO] SSH connection established.")
-
-        # Upload script content via echo (avoids SFTP)
-#        with open(local_script_path, 'r') as f:
-#            script_content = f.read()
-
-#        remote_path = f"/tmp/{generated_script_name}"
-#        print(f"[INFO] Uploading script to: {remote_path}")
-#        escaped_script = script_content.replace("'", "'\"'\"'")
-#        command = f"echo '{escaped_script}' > {remote_path} && chmod +x {remote_path}"
-#        ssh.exec_command(command)
-#        print("[INFO] Script uploaded and permission set.")
-
-        # Execute script
-#        print(f"[INFO] Executing script: python3 {remote_path}")
-#        stdin, stdout, stderr = ssh.exec_command(f"python3 {remote_path}")
-#        execution_result = stdout.read().decode()
-#        error = stderr.read().decode()
-#        ssh.close()
-        # --- NEW: Strip ANSI escape codes from output and error ---
-#        execution_result = remove_ansi_codes(execution_result)
-#        error = remove_ansi_codes(error)
-
-#        return jsonify({
-#            'success': True,
-#            'execution_result': execution_result,
-#            'message': 'Python code executed successfully'
-#        })
-
-#    except Exception as e:
-#        return jsonify({'success': False, 'message': f'Execution error: {str(e)}'})
-
-
 @app.route('/execute', methods=['POST'])
 def execute_code():
-    """Execute all generated test scripts on a remote RPI via SSH"""
-    folder_path = app.config['GENERATED_SCRIPTS_FOLDER']
- 
-    if not os.path.isdir(folder_path):
-        return jsonify({'success': False, 'message': 'Script folder does not exist.'})
- 
+    """Execute test code"""
+    global generated_script_name
+    print(f"[DEBUG] Script to execute: {generated_script_name}")
+
+   #local_folder = '/home/azureuser/Gourab/CTS_AutoTest/generated-scripts'
+    local_script_path = os.path.join(app.config['GENERATED_SCRIPTS_FOLDER'], generated_script_name)
+    print(f"DEBUG {local_script_path}")
+
+    if not os.path.isfile(local_script_path):
+        return jsonify({'success': False, 'message': 'Generated script file does not exist.'})
+
     try:
+        data = request.get_json()
+        code = data.get('code', '')
+
         rpi_list = [
             {"host": "71.185.253.158", "user": "root", "pass": ""},
             {"host": "65.78.96.246", "user": "root", "pass": ""}
         ]
- 
+
         MAX_RETRIES = 3
         RETRY_DELAY = 3
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         connected = False
         connected_host = None
- 
+
         # Retry logic
         for attempt in range(MAX_RETRIES):
             print(f"[INFO] Attempt {attempt + 1}")
@@ -419,49 +300,130 @@ def execute_code():
             if connected:
                 break
             time.sleep(RETRY_DELAY)
- 
+
         if not connected:
             return jsonify({'success': False, 'message': 'Failed to connect to any Raspberry Pi.'})
- 
+
+        #print("[INFO] Connecting to Raspberry Pi...")
+        #ssh = paramiko.SSHClient()
+        #ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        #ssh.connect(RPI_HOST, username=RPI_USER, password=RPI_PASS)
+        #print("[INFO] SSH connection established.")
+
+       # Upload script content via echo (avoids SFTP)
+        with open(local_script_path, 'r') as f:
+            script_content = f.read()
+
+        remote_path = f"/tmp/{generated_script_name}"
+        print(f"[INFO] Uploading script to: {remote_path}")
+        escaped_script = script_content.replace("'", "'\"'\"'")
+        command = f"echo '{escaped_script}' > {remote_path} && chmod +x {remote_path}"
+        ssh.exec_command(command)
+        print("[INFO] Script uploaded and permission set.")
+
+       # Execute script
+        print(f"[INFO] Executing script: python3 {remote_path}")
+        stdin, stdout, stderr = ssh.exec_command(f"python3 {remote_path}")
+        execution_result = stdout.read().decode()
+        error = stderr.read().decode()
+        ssh.close()
+       # --- NEW: Strip ANSI escape codes from output and error ---
+        execution_result = remove_ansi_codes(execution_result)
+        error = remove_ansi_codes(error)
+
+        return jsonify({
+            'success': True,
+            'execution_result': execution_result,
+            'message': 'Python code executed successfully'
+        })
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Execution error: {str(e)}'})
+
+'''
+@app.route('/execute', methods=['POST'])
+def execute_code():
+    """Execute all generated test scripts on a remote RPI via SSH"""
+    folder_path = app.config['GENERATED_SCRIPTS_FOLDER']
+
+    if not os.path.isdir(folder_path):
+        return jsonify({'success': False, 'message': 'Script folder does not exist.'})
+
+    try:
+        rpi_list = [
+            {"host": "71.185.253.158", "user": "root", "pass": ""},
+            {"host": "65.78.96.246", "user": "root", "pass": ""}
+        ]
+
+        MAX_RETRIES = 3
+        RETRY_DELAY = 3
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        connected = False
+        connected_host = None
+
+        # Retry logic
+        for attempt in range(MAX_RETRIES):
+            print(f"[INFO] Attempt {attempt + 1}")
+            for rpi in rpi_list:
+                try:
+                    print(f"[INFO] Connecting to {rpi['host']}...")
+                    ssh.connect(rpi["host"], username=rpi["user"], password=rpi["pass"], timeout=5)
+                    connected = True
+                    connected_host = rpi["host"]
+                    print(f"[INFO] Connected to {rpi['host']}")
+                    break
+                except Exception as e:
+                    print(f"[ERROR] Connection to {rpi['host']} failed: {e}")
+            if connected:
+                break
+            time.sleep(RETRY_DELAY)
+
+        if not connected:
+            return jsonify({'success': False, 'message': 'Failed to connect to any Raspberry Pi.'})
+
         results = []
- 
+
         # Loop over .py files in the folder
         for filename in os.listdir(folder_path):
             if filename.endswith('.py'):
                 local_path = os.path.join(folder_path, filename)
                 with open(local_path, 'r') as f:
                     script_content = f.read()
- 
+
                 remote_path = f"/tmp/{filename}"
                 print(f"[INFO] Uploading {filename} to {remote_path}")
                 escaped_script = script_content.replace("'", "'\"'\"'")
                 command = f"echo '{escaped_script}' > {remote_path} && chmod +x {remote_path}"
                 ssh.exec_command(command)
- 
+
                 # Run the script
                 print(f"[INFO] Executing {filename}")
                 stdin, stdout, stderr = ssh.exec_command(f"python3 {remote_path}")
                 execution_result = stdout.read().decode()
                 error_output = stderr.read().decode()
- 
+
                 results.append({
                     'filename': filename,
                     'stdout': remove_ansi_codes(execution_result),
                     'stderr': remove_ansi_codes(error_output)
                 })
- 
+                # --- NEW: Strip ANSI escape codes from output and error ---
+                execution_result = remove_ansi_codes(execution_result)
+                error = remove_ansi_codes(error)
+                
         ssh.close()
- 
+
         return jsonify({
             'success': True,
             'connected_host': connected_host,
-            'results': results,
+            'results': execution_result,
             'message': 'All scripts executed.'
         })
- 
+
     except Exception as e:
         return jsonify({'success': False, 'message': f'Execution error: {str(e)}'})
-
+'''
 @app.route('/review', methods=['POST'])
 def review_code():
     """Review Python code quality"""
@@ -470,7 +432,7 @@ def review_code():
         code = data.get('code', '')
 
         run_tox = subprocess.run(["tox"], capture_output=True, text=True, check=True)
-        with open('/home/azureuser/Gourab/CTS_AutoTest/reports/summary.txt', 'r')  as f:
+        with open('/home/azureuser/20251106/Gourab/CTS_AutoTest/reports/summary.txt', 'r')  as f:
             summary = f.read()
         if run_tox:
             # Simulate Python code review

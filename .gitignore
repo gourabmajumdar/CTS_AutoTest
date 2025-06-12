@@ -34,5 +34,4 @@ static/uploads/*
 Thumbs.db
 
 # Generated reports
-*.html
-!templates/*.html
+venkat/
