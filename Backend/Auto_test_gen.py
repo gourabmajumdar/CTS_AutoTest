@@ -66,8 +66,8 @@ Write a Python script that:
     return prompt.strip()
 
 def save_script_to_file(code, test_case_name):
-    os.makedirs("/home/azureuser/Gourab/CTS_AutoTest/generated-scripts", exist_ok=True)
-    filename = os.path.join("/home/azureuser/Gourab/CTS_AutoTest/generated-scripts", test_case_name.lower().replace(' ', '_') + ".py")
+    os.makedirs("/home/azureuser/20251106/Gourab/CTS_AutoTest/generated-scripts", exist_ok=True)
+    filename = os.path.join("/home/azureuser/20251106/Gourab/CTS_AutoTest/generated-scripts", test_case_name.lower().replace(' ', '_') + ".py")
     with open(filename, "w") as f:
         f.write(code + "\n")
     return filename
@@ -85,12 +85,12 @@ def process_test_case_file(filepath):
     print_loading_dots(50, 0.2)  # prints dots one by one with 0.5 sec delay
 
     script_name = fields['test_case_name'].lower().replace(' ', '_') + ".py"
-    default_script_path = os.path.join("/home/azureuser/Gourab/CTS_AutoTest/Backend/default_scripts", script_name)
+    default_script_path = os.path.join("/home/azureuser/20251106/Gourab/CTS_AutoTest/Backend/default_scripts", script_name)
 
     if os.path.exists(default_script_path):
         # Copy default script silently and return
-        os.makedirs("/home/azureuser/Gourab/CTS_AutoTest/generated-scripts", exist_ok=True)
-        output_path = os.path.join("/home/azureuser/Gourab/CTS_AutoTest/generated-scripts", script_name)
+        os.makedirs("/home/azureuser/20251106/Gourab/CTS_AutoTest/generated-scripts", exist_ok=True)
+        output_path = os.path.join("/home/azureuser/20251106/Gourab/CTS_AutoTest/generated-scripts", script_name)
         with open(default_script_path, 'r') as src, open(output_path, 'w') as dst:
             dst.write(src.read())
         print(f"Script generated : {script_name}")
@@ -119,7 +119,7 @@ def process_test_case_file(filepath):
     print(f"Script generated : {script_name}")
 
 if __name__ == "__main__":
-    test_case_dir = "/home/azureuser/Gourab/CTS_AutoTest/test_case"
+    test_case_dir = "/home/azureuser/20251106/Gourab/CTS_AutoTest/test_case"
 
     for filename in os.listdir(test_case_dir):
         if filename.endswith(".txt"):

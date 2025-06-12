@@ -1,0 +1,21 @@
+CODE REVIEW SUMMARY
+====================
+Generated at: 2025-06-12 01:14:39
+File analyzed: generated-scripts/check_the_ssid_name_of_the_device.py
+
+BLACK:
+  Return Code: 0
+  Status: Success
+
+FLAKE8:
+  Return Code: 1
+  Status: Issues Found
+
+BANDIT:
+  Return Code: 1
+  Status: Issues Found
+
+PYLINT:
+  Return Code: 0
+  Status: Success
+
